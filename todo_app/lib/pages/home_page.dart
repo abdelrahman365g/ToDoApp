@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo_app/components/list_tile.dart';
 import 'package:todo_app/models/todo_list.dart';
 import 'package:todo_app/pages/tasks_page.dart';
 import '../database/database.dart';
@@ -84,58 +84,17 @@ class _HomePageState extends State<HomePage> {
         itemCount: db.lists.length,
         itemBuilder: (context, index) {
           final list = db.lists[index];
-          return Slidable(
-            endActionPane: ActionPane(
-              motion: const StretchMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) => _deleteList(index),
-                  icon: Icons.delete,
-                  backgroundColor: Colors.red.shade300,
-                  borderRadius: BorderRadius.circular(12),
+          return ListTileWidget(
+            title: list.name,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TasksPage(listIndex: index),
                 ),
-              ],
-            ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TasksPage(listIndex: index),
-                  ),
-                ).then((_) => setState(() {}));
-              },
-              child: Expanded(
-                // Wrap the card with Expanded
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 12),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.yellow[300],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey.shade400),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          list.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+              ).then((_) => setState(() {}));
+            },
+            onDelete: (context) => _deleteList(index),
           );
         },
       ),
