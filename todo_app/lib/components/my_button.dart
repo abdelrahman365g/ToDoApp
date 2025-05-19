@@ -10,8 +10,17 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialButton(
       onPressed: onPressed,
-      color: Theme.of(context).primaryColor,
-      child: Text(text),
+      color: Colors.yellow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 2,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Text(
+        text,
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

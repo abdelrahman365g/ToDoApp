@@ -1,23 +1,28 @@
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
+import '../models/todo_list.dart';
 
 class ToDoDatabase {
-  final _thebox = Hive.box('thebox');
+  final _box = Hive.box('todoBox');
 
-  List toDoList = [];
+  List<ToDoList> lists = [];
 
-  void createIntialTasks() {
-    toDoList = [
-      ['Buy Milk', false],
-      ['Buy Eggs', false],
-      ['Buy Bread', false],
-    ];
-  }
-
+  // Load data from Hive
   void loadData() {
-    toDoList = _thebox.get("TODOLIST");
+    final storedData = _box.get('todoLists', defaultValue: []);
+    if (storedData is List) {
+      lists =
+          storedData
+              .map(
+                (listJson) =>
+                    ToDoList.fromJson(Map<String, dynamic>.from(listJson)),
+              )
+              .toList();
+    }
   }
 
-  void updateData() {
-    _thebox.put("TODOLIST", toDoList);
+  // Save data to Hive
+  void saveData() {
+    final jsonData = lists.map((list) => list.toJson()).toList();
+    _box.put('todoLists', jsonData);
   }
 }

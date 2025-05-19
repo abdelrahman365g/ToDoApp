@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:todo_app/components/dialog_box.dart';
-import 'package:todo_app/components/todo_tile.dart';
-import 'package:todo_app/database/database.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:todo_app/models/todo_list.dart';
+import 'package:todo_app/pages/tasks_page.dart';
+import '../database/database.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,80 +12,132 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _thebox = Hive.box('thebox');
-  ToDoDatabase db = ToDoDatabase();
+  final ToDoDatabase db = ToDoDatabase();
   final _controller = TextEditingController();
 
   @override
   void initState() {
-    if (_thebox.get("TODOLIST") == null) {
-      db.createIntialTasks();
-    } else {
-      db.loadData();
-    }
-
     super.initState();
+    db.loadData();
   }
 
-  void changeCheckBox(bool? value, int index) {
-    setState(() {
-      db.toDoList[index][1] = !db.toDoList[index][1];
-    });
-    db.updateData();
-  }
-
-  void saveNewTask() {
-    setState(() {
-      db.toDoList.add([_controller.text, false]);
-      _controller.clear();
-    });
-    Navigator.pop(context);
-    db.updateData();
-  }
-
-  void createNewTask() {
+  void createNewList() {
     showDialog(
       context: context,
       builder: (context) {
-        return DialogBox(
-          controller: _controller,
-          onSave: saveNewTask,
-          onCancel: () => Navigator.pop(context),
+        return AlertDialog(
+          backgroundColor: Colors.yellow[300],
+          content: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                hintText: "Enter list name",
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  db.lists.add(ToDoList(name: _controller.text, tasks: []));
+                  _controller.clear();
+                });
+                db.saveData();
+                Navigator.pop(context);
+              },
+              child: const Text("Create List"),
+            ),
+          ],
         );
       },
     );
   }
 
-  void deleteTask(int index) {
+  void _deleteList(int index) {
     setState(() {
-      db.toDoList.removeAt(index);
+      db.lists.removeAt(index);
+      db.saveData(); // Save updated data to the database
     });
-    db.updateData();
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('TO DO'), elevation: 0),
+      backgroundColor: Colors.yellow[100],
+      appBar: AppBar(
+        title: const Text('My Lists'),
+        backgroundColor: Colors.yellow,
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: createNewTask,
+        onPressed: createNewList,
         backgroundColor: Colors.yellow,
         child: const Icon(Icons.add),
       ),
-      body: Center(
-        child: ListView.builder(
-          itemCount: db.toDoList.length,
-          itemBuilder:
-              (context, index) => ToDoTile(
-                title: db.toDoList[index][0],
-                isDone: db.toDoList[index][1],
-                onChanged: (value) {
-                  changeCheckBox(value, index);
-                },
-                deleteTask: (context) => deleteTask(index),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(12),
+        itemCount: db.lists.length,
+        itemBuilder: (context, index) {
+          final list = db.lists[index];
+          return Slidable(
+            endActionPane: ActionPane(
+              motion: const StretchMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) => _deleteList(index),
+                  icon: Icons.delete,
+                  backgroundColor: Colors.red.shade300,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ],
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TasksPage(listIndex: index),
+                  ),
+                ).then((_) => setState(() {}));
+              },
+              child: Expanded(
+                // Wrap the card with Expanded
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow[300],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade400),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          list.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
