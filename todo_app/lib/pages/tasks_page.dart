@@ -19,27 +19,27 @@ class _TasksPageState extends State<TasksPage> {
   @override
   void initState() {
     super.initState();
-    db.loadData(); // Load data from the database
+    db.loadData();
   }
 
   void _addTask(Task newTask) {
     setState(() {
       db.lists[widget.listIndex].tasks.add(newTask);
-      db.saveData(); // Save updated data to the database
+      db.saveData();
     });
   }
 
   void _toggleTaskCompletion(int taskIndex, bool isDone) {
     setState(() {
       db.lists[widget.listIndex].tasks[taskIndex].isDone = isDone;
-      db.saveData(); // Save updated data to the database
+      db.saveData();
     });
   }
 
   void _deleteTask(int taskIndex) {
     setState(() {
       db.lists[widget.listIndex].tasks.removeAt(taskIndex);
-      db.saveData(); // Save updated data to the database
+      db.saveData();
     });
   }
 

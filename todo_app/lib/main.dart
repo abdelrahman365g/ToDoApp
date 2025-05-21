@@ -5,7 +5,7 @@ import 'pages/home_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox('todoBox'); // Open the Hive box
+  await Hive.openBox('todoBox');
   runApp(const MyApp());
 }
 

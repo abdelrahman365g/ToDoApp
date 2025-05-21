@@ -11,7 +11,6 @@ class Task {
     required this.isDone,
   });
 
-  // Convert Task to JSON
   Map<String, dynamic> toJson() {
     return {
       'title': title,
@@ -21,7 +20,6 @@ class Task {
     };
   }
 
-  // Create Task from JSON
   factory Task.fromJson(Map<String, dynamic> json) {
     return Task(
       title: json['title'] ?? '',

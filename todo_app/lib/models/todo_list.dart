@@ -6,12 +6,10 @@ class ToDoList {
 
   ToDoList({required this.name, required this.tasks});
 
-  // Convert to JSON
   Map<String, dynamic> toJson() {
     return {'name': name, 'tasks': tasks.map((task) => task.toJson()).toList()};
   }
 
-  // Construct from JSON
   factory ToDoList.fromJson(Map<String, dynamic> json) {
     return ToDoList(
       name: json['name'] ?? '',

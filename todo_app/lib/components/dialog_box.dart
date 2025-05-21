@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/components/my_button.dart';
 
 class DialogBox extends StatelessWidget {
-  // ignore: prefer_typing_uninitialized_variables
   final controller;
   final VoidCallback onSave;
   final VoidCallback onCancel;
@@ -33,7 +32,7 @@ class DialogBox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 MyButton(text: "Save", onPressed: onSave),
-                const SizedBox(width: 20),
+                const SizedBox(width: 30),
                 MyButton(text: "Cancel", onPressed: onCancel),
               ],
             ),
