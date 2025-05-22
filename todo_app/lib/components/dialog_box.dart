@@ -15,7 +15,7 @@ class DialogBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Colors.yellow[300],
+      backgroundColor: Colors.yellow[100],
       content: SizedBox(
         height: 200,
         child: Column(
@@ -24,15 +24,19 @@ class DialogBox extends StatelessWidget {
             TextField(
               controller: controller,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: "Add a new list",
+                labelText: 'List Title',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: Colors.white,
               ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                MyButton(text: "Create List", onPressed: onSave),
                 MyButton(text: "Cancel", onPressed: onCancel),
-                MyButton(text: "Save", onPressed: onSave),
               ],
             ),
           ],

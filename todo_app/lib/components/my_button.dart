@@ -16,10 +16,10 @@ class MyButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Text(
         text,
-        style: const TextStyle(
-          color: Colors.black,
+        style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 16,
+          color: Colors.black,
         ),
       ),
     );
