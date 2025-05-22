@@ -5,7 +5,10 @@ class DialogBox extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onSave;
   final VoidCallback onCancel;
-  const DialogBox({
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  DialogBox({
     super.key,
     required this.controller,
     required this.onSave,
@@ -18,28 +21,43 @@ class DialogBox extends StatelessWidget {
       backgroundColor: Colors.yellow[100],
       content: SizedBox(
         height: 200,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextField(
-              controller: controller,
-              decoration: InputDecoration(
-                labelText: 'List Title',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextFormField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: 'List Title',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-                filled: true,
-                fillColor: Colors.white,
+                validator:
+                    (value) =>
+                        value == null || value.isEmpty
+                            ? 'Please enter a title'
+                            : null,
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MyButton(text: "Create List", onPressed: onSave),
-                MyButton(text: "Cancel", onPressed: onCancel),
-              ],
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MyButton(
+                    text: "Create List",
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        onSave();
+                      }
+                    },
+                  ),
+                  MyButton(text: "Cancel", onPressed: onCancel),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

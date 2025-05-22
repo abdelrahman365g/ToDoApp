@@ -16,6 +16,7 @@ class TaskEditPage extends StatefulWidget {
 }
 
 class _TaskEditPageState extends State<TaskEditPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late DateTime? _selectedDate;
@@ -61,14 +62,16 @@ class _TaskEditPageState extends State<TaskEditPage> {
   }
 
   void _saveTask() {
-    final updatedTask = Task(
-      title: _titleController.text.trim(),
-      description: _descriptionController.text.trim(),
-      dueDate: _selectedDate,
-      isDone: widget.task.isDone,
-    );
-    widget.onTaskUpdate(updatedTask);
-    Navigator.pop(context);
+    if (_formKey.currentState!.validate()) {
+      final updatedTask = Task(
+        title: _titleController.text.trim(),
+        description: _descriptionController.text.trim(),
+        dueDate: _selectedDate,
+        isDone: widget.task.isDone,
+      );
+      widget.onTaskUpdate(updatedTask);
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -84,69 +87,78 @@ class _TaskEditPageState extends State<TaskEditPage> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                labelText: 'Task Title',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 24),
-            TextFormField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 24),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Due Date',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  labelText: 'Task Title',
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey),
                   ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.calendar_today),
-                      const SizedBox(width: 8),
-                      Text(
-                        _selectedDate == null
-                            ? 'No due date'
-                            : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
-                      ),
-                      const Spacer(),
-                      TextButton(
-                        onPressed: () => _selectDate(context),
-                        child: const Text('Change Date'),
-                      ),
-                    ],
-                  ),
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
-              ],
-            ),
-          ],
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Task title cannot be empty';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              TextFormField(
+                controller: _descriptionController,
+                decoration: InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Due Date',
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.calendar_today),
+                        const SizedBox(width: 8),
+                        Text(
+                          _selectedDate == null
+                              ? 'No due date'
+                              : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () => _selectDate(context),
+                          child: const Text('Change Date'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
