@@ -22,14 +22,14 @@ class _TaskDetailsPageState extends State<TaskDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _task = widget.task; // Initialize the local task state
+    _task = widget.task;
   }
 
   void _updateTask(Task updatedTask) {
     setState(() {
-      _task = updatedTask; // Update the local task state
+      _task = updatedTask;
     });
-    widget.onTaskUpdate(updatedTask); // Notify the parent about the update
+    widget.onTaskUpdate(updatedTask);
   }
 
   @override

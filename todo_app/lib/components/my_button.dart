@@ -11,7 +11,7 @@ class MyButton extends StatelessWidget {
     return MaterialButton(
       onPressed: onPressed,
       color: Colors.yellow,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
       elevation: 2,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Text(
@@ -19,6 +19,7 @@ class MyButton extends StatelessWidget {
         style: const TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
+          fontSize: 16,
         ),
       ),
     );

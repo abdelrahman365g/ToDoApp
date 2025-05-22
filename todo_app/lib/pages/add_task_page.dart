@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/components/my_button.dart';
 import '../models/task.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -132,24 +133,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               const SizedBox(height: 32),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.yellow,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  onPressed: _saveTask,
-                  child: const Text(
-                    'Add Task',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
+                child: MyButton(onPressed: _saveTask, text: 'Add Task'),
               ),
             ],
           ),

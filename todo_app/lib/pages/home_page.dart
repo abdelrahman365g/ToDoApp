@@ -4,6 +4,7 @@ import 'package:todo_app/components/list_tile.dart';
 import 'package:todo_app/models/todo_list.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/pages/tasks_page.dart';
+import 'package:todo_app/components/dialog_box.dart';
 import '../database/database.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,35 +49,17 @@ class _HomePageState extends State<HomePage> {
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.yellow[300],
-          content: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: TextField(
-              controller: _controller,
-              decoration: const InputDecoration(
-                hintText: "Enter list name",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  db.lists.add(ToDoList(name: _controller.text, tasks: []));
-                  _controller.clear();
-                });
-                db.saveData();
-                Navigator.pop(context);
-              },
-              child: const Text("Create List"),
-            ),
-          ],
+        return DialogBox(
+          controller: _controller,
+          onSave: () {
+            setState(() {
+              db.lists.add(ToDoList(name: _controller.text, tasks: []));
+              _controller.clear();
+            });
+            db.saveData();
+            Navigator.pop(context);
+          },
+          onCancel: () => Navigator.pop(context),
         );
       },
     );
@@ -119,6 +102,7 @@ class _HomePageState extends State<HomePage> {
               ],
             )
             : const SizedBox.shrink();
+
     return Scaffold(
       backgroundColor: Colors.yellow[100],
       appBar: AppBar(
@@ -170,5 +154,11 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }
